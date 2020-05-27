@@ -1,6 +1,6 @@
 'use strict';
 /** Module Dependencies **/
-
+const shortid = require('shortid');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -10,9 +10,8 @@ const mongoose = require('mongoose'),
 let userSchema = new Schema({
   userId: {
     type: String,
-    default: '',
+    default: shortid.generate(),
     index: true,
-    unique: true,
     trim:true
   },
   firstName: {
@@ -52,7 +51,7 @@ let userSchema = new Schema({
   mobileNumber: {
     type: String,
     trim:true,
-    unique:true
+    default:2
   },
   tokens:[{
     token:{

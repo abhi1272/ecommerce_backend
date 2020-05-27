@@ -5,17 +5,14 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
 const http = require('http');
+const util = require('util')
 const appConfig = require('./config/appConfig');
 const logger = require('./app/libs/loggerLib');
 const routeLoggerMiddleware = require('./app/middlewares/routeLogger.js');
 const globalErrorMiddleware = require('./app/middlewares/appErrorHandler');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
-
-
 app.use(morgan('dev'));
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -41,6 +38,30 @@ app.all('*', function(req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     next();
 });
+
+// redis connection 
+// const redis = require('redis')
+
+// const client = redis.createClient()
+
+// client.on('connect',(err) => {
+//   if(err){
+//     console.log(err)
+//   }else{
+//     console.log('redis connected')
+//   }
+// })
+
+// elastic search connection  
+
+const client = require('./config/elastic');
+
+client.cluster.health({},function(err,resp,status) {  
+  console.log("-- Client Health --",err,resp,status);
+});
+
+const modelCreation =  require('./config/modelCreation');
+modelCreation.setRouter(app);
 
 //Bootstrap models
 fs.readdirSync(modelsPath).forEach(function (file) {
@@ -115,6 +136,7 @@ function onListening() {
     : 'port ' + addr.port;
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
+  console.log(appConfig.db.uri)
   let db = mongoose.connect(appConfig.db.uri,{ useNewUrlParser:true ,useCreateIndex:true});
 }
 

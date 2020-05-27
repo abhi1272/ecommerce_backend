@@ -6,6 +6,7 @@ const logger = require('../libs/loggerLib');
 const validateInput = require('../libs/paramsValidationLib');
 const check = require('../libs/checkLib');
 const email = require('../email/mail');
+const redis = require('../../config/redis')
 
 /* Models */
 const User = require('../models/User');
@@ -46,11 +47,13 @@ let loginFunction = async (req, res) => {
     try{
         let user = await User.findByCredentials(req.body.email,req.body.password);
         const token = await user.generateAuthToken();
+        setToken(res,user,token)
         let apiResponse = response.generate(false,'You are successfully loggedin',200,{user,token});
         res.send(apiResponse);
     }
     catch(e){
         res.status('500').send(e);
+        console.log(e)
     }
 };
 
@@ -59,7 +62,7 @@ let loginFunction = async (req, res) => {
 
 
 let logout = async (req, res) => {
-
+    console.log('logout-called',req.loggedInUser)
     try{
         req.loggedInUser.tokens = req.loggedInUser.tokens.filter((token)=>{
             return token.token !== req.token;
@@ -89,6 +92,28 @@ let updateProfile = async (req,res) => {
         res.status('500').send(e);
     }
 };
+
+let setToken = (res,user,token) => {
+    // let refresh_token = generate_refresh_token(64);
+     // let access_token_maxage = new Date() + jwt_refresh_expiration;
+     // Set browser httpOnly cookies
+     res.cookie("access_token", token, {
+        // secure: true,
+        httpOnly: true
+    });
+    // res.cookie("refresh_token", refresh_token, {
+    //     // secure: true,
+    //     httpOnly: true
+    // });
+
+    redis.set(user.id, JSON.stringify({
+        access_token: token,
+        expires: 60
+    }),
+    redis.print
+);
+
+}
 
 module.exports = {
 

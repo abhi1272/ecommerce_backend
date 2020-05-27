@@ -5,7 +5,7 @@ const Model = require('../../config/models')
 const appConfig = require('../../config/appConfig')
 
 
-let getSingleProduct = (req, res) => {
+let readModel = (req, res) => {
 
     console.log(appConfig.model)
 
@@ -28,7 +28,7 @@ let getSingleProduct = (req, res) => {
 
 
 
-let getAllProduct = (req, res) => {
+let readAllModel = (req, res) => {
 
     Model[appConfig.model].find({})
         .exec((err, result) => {
@@ -49,7 +49,10 @@ let getAllProduct = (req, res) => {
 
 
 
-let addProduct = (req, res) => {
+let createModel = (req, res) => {
+
+
+    console.log('ss',appConfig.model)
 
     let Product = Model[appConfig.model]({
         ...req.body
@@ -70,7 +73,7 @@ let addProduct = (req, res) => {
 
 };
 
-let editProduct = (req, res) => {
+let updateModel = (req, res) => {
 
     let options = req.body;
     Model[appConfig.model].updateOne({ _id: req.params.id},options,(err, result) => {
@@ -90,7 +93,7 @@ let editProduct = (req, res) => {
 
 };
 
-let deleteProduct = (req,res) =>{
+let deleteModel = (req,res) =>{
 
     Model[appConfig.model].deleteMany({Batch:req.params.Batch},(err,result)=>{
         if(err){
@@ -110,9 +113,9 @@ let deleteProduct = (req,res) =>{
 
 
 module.exports = {
-    getSingleProduct: getSingleProduct,
-    getAllProduct: getAllProduct,
-    addProduct: addProduct,
-    editProduct:editProduct,
-    deleteProduct:deleteProduct
+    readModel,
+    readAllModel,
+    createModel,
+    updateModel,
+    deleteModel
 };

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
+const productSchema = mongoose.Schema();
 
-const productSchema = mongoose.Schema({
+let prodObj = {
     productName:{
         type:String,
         require:true,
@@ -25,9 +26,8 @@ const productSchema = mongoose.Schema({
     Rate:{
         type:Number
     }
-},
-{
-    timestamps:true
-});
+}
+
+productSchema.add(prodObj)
 
 module.exports = mongoose.model('Product',productSchema);
