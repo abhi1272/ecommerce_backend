@@ -29,6 +29,7 @@ let signUpFunction = async (req, res) => {
     }
     catch(e){
         let apiResponse = response.generate(true,e,500,null);
+        logger.error('Not able to sign-up','userController:signup',5)
         res.status('500').send(apiResponse);
     }
 
@@ -36,7 +37,7 @@ let signUpFunction = async (req, res) => {
 
 // start of login function 
 let loginFunction = async (req, res) => {
-    console.log('login called',req.body);
+
     // if(check.isEmpty(req.body.email)){
     //     throw Error('Enter email id')
     // }
@@ -48,11 +49,13 @@ let loginFunction = async (req, res) => {
         let user = await User.findByCredentials(req.body.email,req.body.password);
         const token = await user.generateAuthToken();
         setToken(res,user,token)
-        let apiResponse = response.generate(false,'You are successfully loggedin',200,{user,token});
+        logger.info(`You are successfully logged in ${user}','userController: login`,1);
+        let apiResponse = response.generate(false,'You are successfully logged in',200,{user,token});
         res.send(apiResponse);
     }
     catch(e){
         res.status('500').send(e);
+        logger.error('Not able to login','userController:login',5)
         console.log(e)
     }
 };
@@ -68,9 +71,11 @@ let logout = async (req, res) => {
             return token.token !== req.token;
         });
         await req.loggedInUser.save();
+        logger.info(`You are successfully logged out ${req.loggedInUser}','userController: logout`,1);
         res.status('200').send('successfully logout');
     }catch(e){
         res.status('501').send(e);
+        logger.error('Not able to logout','userController:logout',5)
     }
 
 }; // end of the logout function.
@@ -93,27 +98,19 @@ let updateProfile = async (req,res) => {
     }
 };
 
-let setToken = (res,user,token) => {
-    // let refresh_token = generate_refresh_token(64);
-     // let access_token_maxage = new Date() + jwt_refresh_expiration;
-     // Set browser httpOnly cookies
-     res.cookie("access_token", token, {
-        // secure: true,
-        httpOnly: true
-    });
-    // res.cookie("refresh_token", refresh_token, {
-    //     // secure: true,
-    //     httpOnly: true
-    // });
-
-    redis.set(user.id, JSON.stringify({
-        access_token: token,
-        expires: 60
+let setToken = (res, user, token) => {
+  res.cookie("access_token", token, {
+    httpOnly: true,
+  });
+  redis.set(
+    user.id,
+    JSON.stringify({
+      access_token: token,
+      expires: 60,
     }),
     redis.print
-);
-
-}
+  );
+};
 
 module.exports = {
 

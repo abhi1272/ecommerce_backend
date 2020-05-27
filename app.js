@@ -54,11 +54,11 @@ app.all('*', function(req, res, next) {
 
 // elastic search connection  
 
-const client = require('./config/elastic');
+// const client = require('./config/elastic');
 
-client.cluster.health({},function(err,resp,status) {  
-  console.log("-- Client Health --",err,resp,status);
-});
+// client.cluster.health({},function(err,resp,status) {  
+//   console.log("-- Client Health --",err,resp,status);
+// });
 
 const modelCreation =  require('./config/modelCreation');
 modelCreation.setRouter(app);
