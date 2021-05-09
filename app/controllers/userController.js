@@ -102,14 +102,14 @@ let setToken = (res, user, token) => {
   res.cookie("access_token", token, {
     httpOnly: true,
   });
-  redis.set(
-    user.id,
-    JSON.stringify({
-      access_token: token,
-      expires: 60,
-    }),
-    redis.print
-  );
+//   redis.set(
+//     user.id,
+//     JSON.stringify({
+//       access_token: token,
+//       expires: 60,
+//     }),
+//     redis.print
+//   );
 };
 
 module.exports = {

@@ -2,64 +2,107 @@ const Payment = require('../models/payment');
 const Bill = require('../models/Bill');
 const check = require('../libs/checkLib');
 const shortId = require('shortid');
+const ObjectId = require('mongoose').ObjectId;
+const { update } = require('../models/Bill');
 
 let create = async (req,res) => {
-    let billID = req.params.id;
+    const {customerId,customerName} = req.body
+
+    let billID
+    let restAmount
    
+    if(req.body.billID){
+        billID = req.body.billID
+    }else{
+        const result = await Bill.find({$or:[{Customer:customerName}]}).sort({Date:1,Time:1}).lean() 
+        let foundBillToUpdate = result.find(item => item.paymentIds == undefined || item.fullPaidStatus === false)
+        billID = foundBillToUpdate._id
+    }
+
     let result = await Bill.findById(billID);
 
-    let billAmount = result.totalAmount;
+    let billAmount = result.billAmount;
 
     let paymentId = shortId.generate();
 
     let data =  await Payment.find({billID}).sort({ _id: -1 }).limit(1);
+    console.log(data)
 
     if(data.length > 0){
-        var restAmount = data[0].restAmount  - req.body.paidAmount;
+        restAmount = data[0].restAmount  - +req.body.paidAmount;
         if(data[0].restAmount === 0){
             var message = 'No more payments to this Bill as the restAmount is already zero';
             res.send(message);
             return;
         }
-    }else{
-        var restAmount = billAmount - req.body.paidAmount;
+    }
+    else{
+        console.log('billAmount',billAmount,req.body.paidAmount)
+        restAmount = billAmount - +req.body.paidAmount;
     }
 
     if(restAmount < 0){
+        console.log('if...')
         Math.abs(restAmount);
         var message = `adjust ${restAmount} in next bill`;
-        var restAmount = 0;
+            restAmount = 0;
         let newPayment = new Payment({
-            ...req.body
+            ...req.body,
+            customer_name:result.Customer,
+            billNo:result.Bill_No
             ,billID
             ,billAmount
             ,restAmount
             ,paymentId
         });
 
+        console.log('newPayment',newPayment)
+
         try{
             await newPayment.save();
 
-            await Bill.findOneAndUpdate({_id: billID}, {$push: {paymentIds: newPayment.paymentId}});
-
+            const query = {'_id': billID},
+            update = {
+                $set: {fullPaidStatus:restAmount?false:true,billAmountLeft:restAmount},
+                $push: {paymentIds: newPayment.paymentId}
+            },
+            options = {upsert: true};
+           
+            await Bill.findOneAndUpdate(query,update,options);
+        
             res.send({newPayment,message});
         }catch(e){
             res.status('500').send(e);
         }
     }else{
+
         let newPayment = new Payment({
-            ...req.body
+            ...req.body,
+            customer_name:result.Customer,
+            billNo:result.Bill_No
             ,billID
             ,billAmount
             ,restAmount
             ,paymentId
         });
 
+        console.log('else', newPayment)
+
+
         try{
             await newPayment.save();
 
-            await Bill.findOneAndUpdate({_id: billID}, {$push: {paymentIds: newPayment.paymentId}});
+            console.log('rest status',restAmount)
 
+            const query = {'_id': billID},
+            update = {
+                $set: {fullPaidStatus:restAmount?false:true,billAmountLeft:restAmount},
+                $push: {paymentIds: newPayment.paymentId}
+            },
+            options = {upsert: true};
+           
+            await Bill.findOneAndUpdate(query,update,options);
+          
             res.send({newPayment,message});
         }catch(e){
             res.status('500').send(e);
@@ -69,13 +112,19 @@ let create = async (req,res) => {
 };
 
 
-let getSingleBillPayment = async (req,res) => {
+let getAllPayment = async (req,res) => {
 
-    let id = req.params.id;
+    let filter = {}
+
+    if(req.query.id){
+        filter = {billID:req.query.id}
+    }else if(req.query.name){
+        filter = {customer_name:req.query.name}
+    }
 
     try{
-        let bill = await Payment.find({billID:id});
-        res.send(bill);
+        let payment = await Payment.find(filter).sort({createdAt:-1})
+        res.send(payment);
     }catch(e){
         res.send(e);
     }
@@ -123,7 +172,7 @@ let deletePayment = async (req,res) => {
 
 module.exports = {
     create,
-    getSingleBillPayment,
+    getAllPayment,
     updatePayment,
     deletePayment
 };

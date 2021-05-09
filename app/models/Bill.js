@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
-
-
 const billSchema = mongoose.Schema({
-    billId: {
+    ORDER_NO:{
+        type:Number
+    },
+    Bill_No: {
         type: String,
         require: true
     },
-    totalAmount: {
+    billAmount: {
         type: Number,
         require:true
     },
@@ -15,6 +16,19 @@ const billSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         required:true,
         ref:'Customer'
+    },
+    Customer:{
+        type: String
+    },
+    billAmountLeft:{
+        type:Number
+    },
+    fullPaidStatus:{
+        type:Boolean,
+        default:false
+    },
+    image:{
+        type:String
     },
     paymentIds:[]
 },

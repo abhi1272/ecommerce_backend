@@ -1,6 +1,7 @@
 const model = {
     Customer: require('../app/models/Customer'),
-    Product: require('../app/models/Product')
+    Products: require('../app/models/Product'),
+    Cashbook: require('../app/models/Cashbook.js')
 }
 
 module.exports = model

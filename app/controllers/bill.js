@@ -24,7 +24,7 @@ let create = async (req,res) => {
 let getAllBills = async (req,res) => {
 
     try{
-        let bills = await Bill.find({});
+        let bills = await Bill.find({}).sort({Date:-1,Time:-1})
         res.send(bills);
     }catch(e){
         res.status('500').send(e);
@@ -35,10 +35,10 @@ let getAllBills = async (req,res) => {
 
 let getBillsByCustomer = async (req,res) => {
 
-    let customerId = req.params.customerId;
+    let customerName = req.params.customer;
 
     try{
-        let bills = await Bill.find({customerId:customerId});
+        let bills = await Bill.find({Customer:customerName});
         res.send(bills);
     }catch(e){
         res.status('500').send(e);

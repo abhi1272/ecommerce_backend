@@ -48,11 +48,6 @@ let userSchema = new Schema({
       }
     }
   },
-  mobileNumber: {
-    type: String,
-    trim:true,
-    default:2
-  },
   tokens:[{
     token:{
       type:String,

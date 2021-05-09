@@ -21,7 +21,7 @@ function insertUserData(){
           // handle error
           console.log(err);
         } else {
-           console.log('data inserted succesfully');
+           console.log('data inserted successfully');
           // handle success
         }
      });

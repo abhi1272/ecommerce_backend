@@ -1,19 +1,19 @@
 const appConfig = require("./../../config/appConfig");
-const common = require('../controllers/common')
+const customer = require('../controllers/customer')
 
 module.exports.setRouter = (app) => { 
 
     let baseUrl = `${appConfig.apiVersion}/customer`;
 
-    app.post(baseUrl+'/add',common.createModel);
+    app.post(baseUrl+'/add',customer.create);
 
-    app.get(baseUrl,common.readAllModel);
+    app.get(baseUrl,customer.getAllCustomers);
 
-    app.get(baseUrl+'/:id',common.readModel);
+    app.get(baseUrl+'/:id',customer.getCustomer);
 
-    app.patch(baseUrl+'/:id',common.updateModel);
+    app.patch(baseUrl+'/:id',customer.updateCustomer);
 
-    app.delete(baseUrl+'/:id',common.deleteModel);
+    app.delete(baseUrl+'/:id',customer.deleteCustomer);
     
 };
 

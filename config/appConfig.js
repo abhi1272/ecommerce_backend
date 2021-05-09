@@ -1,10 +1,10 @@
 let appConfig = {};
 
-appConfig.port = process.env.PORT || 5000;
+appConfig.port = process.env.PORT || 8000;
 appConfig.allowedCorsOrigin = "*";
 appConfig.env = "dev";
 appConfig.db = {
-    uri: process.env.MONGODB_LOCAL_URL || 'mongodb://127.0.0.1:27017/pharmaApp'
+    uri: 'mongodb+srv://admin:Abhi%40awz5@cluster0-vqxjh.mongodb.net/pharmaApp?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true'
 };
 appConfig.apiVersion = '/api/v1';
 model = ''

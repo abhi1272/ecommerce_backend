@@ -7,7 +7,7 @@ const appConfig = require('../../config/appConfig')
 
 let readModel = (req, res) => {
 
-    console.log(appConfig.model)
+    console.log(Model,appConfig.model)
 
     Model[appConfig.model].find({ _id: req.params.id })
         .exec((err, result) => {
@@ -20,7 +20,7 @@ let readModel = (req, res) => {
                 res.send(apiResponse);
             } else {
                 let apiResponse = response.generate(false, `${appConfig.model} found`, 200, result);
-                res.send(apiResponse);
+                res.send(result[0].image);
             }
         }
         );

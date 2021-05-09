@@ -1,12 +1,12 @@
-const redis = require('redis')
+// const redis = require('redis')
 
-const client = redis.createClient()
+// const client = redis.createClient()
 
-client.on('connect',() => {
-    console.log('connected')
-})
+// client.on('connect',() => {
+//     console.log('connected')
+// })
 
-module.exports = client
+// module.exports = client
 
 //Set Single Object 
 

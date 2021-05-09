@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const productSchema = mongoose.Schema();
+const imageProductSchema = mongoose.Schema();
 
 let prodObj = {
     productName:{
@@ -13,11 +13,6 @@ let prodObj = {
         require:true,
         trim:true
     },
-    batchNo:{
-        type:String,
-        trim:true,
-        unique:true
-    },
     MRP:{
         type:Number,
         require:true
@@ -26,10 +21,10 @@ let prodObj = {
         type:Number
     },
     image:{
-        type:String
+        type:Buffer
     }
 }
 
-productSchema.add(prodObj)
+imageProductSchema.add(prodObj)
 
-module.exports = mongoose.model('Product',productSchema);
+module.exports = mongoose.model('ImageProduct',imageProductSchema);

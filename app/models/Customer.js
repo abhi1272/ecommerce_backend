@@ -1,61 +1,40 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-const shortid = require('shortid');
-const faker = require('faker');
+const Schema = mongoose.Schema
 
 const CustomerSchema = mongoose.Schema({
-    customerId:{
-      type:String,
-      default:shortid.generate()
+    Cust_Id:{
+      type: String
     },
-    firstName: {
-        type: String,
-        trim:true,
-        required:true,
-        default:faker.name.firstName()
+    Customer_Name: {
+      type:String,
+    },
+    Place:{
+      type:String
+    },
+    address:{
+      street:{
+        type:String
       },
-      lastName: {
-        type: String,
-        default:faker.name.lastName(),
-        trim:true
+      place:{
+        type:String,
+        required:true
       },
-      address:{
-        street:{
-          type:String
-        },
-        place:{
-          type:String,
-          required:true
-        },
-        pincode:{
-          type:String,
-          required:true
-        }
-      },
-      email: {
-        type: String,
-        required:true,
-        trim:true,
-        unique:true,
-        lowercase:true,
-        validate(value){
-          if(!validator.isEmail(value)){
-            throw new Error('Pass Valid email id');
-          }
-        },
-        default:faker.internet.email()
-      },
-      mobileNumber: {
-        type: String,
-        trim:true,
-        unique:true,
-        default:faker.random.number()
-      },
-      billIds:[],
-      avatar:{
-        type:Buffer,
-        default:faker.image.avatar()
+      pincode:{
+        type:String,
+        required:true
       }
+    },
+    billIds: [
+      {
+        type:Schema.Types.ObjectId,
+        ref:'Bill'
+      }
+    ]
+    ,
+    phoneNumber:{
+      type :Number
+    },
+    paymentIds:[]
 },
 {
     timestamps:true

@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 
 const paymentSchema = new mongoose.Schema({
-
+    
+    customer_name:{
+        type:String,
+        required:true,
+        trim:true
+    },
     paidAmount:{
         type:Number,
         required:true,
@@ -16,6 +21,9 @@ const paymentSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         required:true,
         ref:'Bill'
+    },
+    billNo:{
+        type:String
     },
     restAmount:{
         type:Number,
