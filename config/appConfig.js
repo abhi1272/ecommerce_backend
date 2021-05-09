@@ -6,7 +6,7 @@ appConfig.env = "dev";
 appConfig.db = {
     uri: 'mongodb+srv://admin:Abhi%40awz5@cluster0-vqxjh.mongodb.net/pharmaApp?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true'
 };
-appConfig.apiVersion = '/api/v1';
+appConfig.apiVersion = '/';
 model = ''
   
 
