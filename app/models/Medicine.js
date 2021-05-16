@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
       Schema = mongoose.Schema;
 
-let productSchema = new Schema(
+let medicineSchema = new Schema(
   {
-    name: {
+    medicine_name: {
       type: String,
       require: true,
       trim: true,
     },
-    company: {
+    manufacturer: {
       type: String,
       require: true,
       trim: true,
@@ -16,19 +16,11 @@ let productSchema = new Schema(
     composition:[
         {type:String}
     ],
-    batchNo: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    mrp: {
+    MRP: {
       type: Number,
       require: true,
     },
-    discount: {
-      type: Number,
-    },
-    Rate: {
+    best_price: {
       type: Number,
     },
     image: {
@@ -41,13 +33,8 @@ let productSchema = new Schema(
       name: { type: String },
       uuid: { type: String },
     }],
-    addedBy: {
-      name: {
-        type: String,
-      },
-      uuid: {
-        type: String,
-      },
+    pharmacist: {
+        type: Object
     },
     similarProducts: [
       {
@@ -62,4 +49,4 @@ let productSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Medicine", medicineSchema);

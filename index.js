@@ -138,7 +138,6 @@ function onListening() {
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log(appConfig.db.uri)
   let db = mongoose.connect(appConfig.db.uri,{ useNewUrlParser:true ,useCreateIndex:true});
-  mongoose.set('debug',true)
 }
 
 process.on('unhandledRejection', (reason, p) => {
@@ -165,6 +164,7 @@ mongoose.connection.on('open', function (err) {
     logger.error(err, 'mongoose connection open handler', 10);
   } else {
     console.log("database connection open success");
+    mongoose.set('debug',true)
     logger.info("database connection open",
       'database connection open handler', 10);
   }

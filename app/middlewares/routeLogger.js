@@ -34,6 +34,7 @@ let requestIpLogger = (req, res, next) => {
 };// end request ip logger function  
 
 createModel = (req, res, next) => {
+    req.originalUrl = req.originalUrl.replace("?", "/");
     let model = req.originalUrl.slice(8).split("/")
     appConfig.model = model[0].charAt(0).toUpperCase() + model[0].slice(1)
     next() 

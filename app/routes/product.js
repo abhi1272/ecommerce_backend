@@ -3,7 +3,8 @@ const common = require('../controllers/common')
 const productController = require('../controllers/product')
 const helper = require('../_helper/file-upload')
 const auth = require('../middlewares/auth')
-const multer = require('multer')
+const multer = require('multer');
+const product = require("../controllers/product");
 const upload = multer({
     // limits:{
     //     fileSize:1000000
@@ -18,6 +19,9 @@ const upload = multer({
 module.exports.setRouter = (app) => { 
 
     let baseUrl = `${appConfig.apiVersion}/product`;
+
+    app.post(baseUrl+'/prescription',product.addPrescription)
+
 
     app.post(baseUrl+'/add',common.createModel);
 

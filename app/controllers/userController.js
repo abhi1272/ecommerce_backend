@@ -28,6 +28,7 @@ let signUpFunction = async (req, res) => {
 
     }
     catch(e){
+        console.log(e)
         let apiResponse = response.generate(true,e,500,null);
         logger.error('Not able to sign-up','userController:signup',5)
         res.status('500').send(apiResponse);

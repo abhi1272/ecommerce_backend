@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require("./../../app/controllers/userController");
+const common = require("./../../app/controllers/common");
 const appConfig = require("./../../config/appConfig");
 const auth = require("../middlewares/auth");
 
@@ -9,6 +10,7 @@ module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}/users`;
 
     // defining routes.
+    app.get(`${baseUrl}`, common.readModel);
 
 
     // params: firstName, lastName, email, mobileNumber, password
