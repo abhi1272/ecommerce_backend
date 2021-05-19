@@ -19,11 +19,13 @@
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "@tensorflow/tfjs-node": "^3.6.1",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "bull": "^3.14.0",
     "cloudinary": "^1.25.1",
     "cookie-parser": "^1.4.3",
+    "datauri": "^3.0.0",
     "elasticsearch": "^16.7.1",
     "express": "^4.15.5",
     "express-session": "^1.15.6",
@@ -47,6 +49,7 @@
     "sharp": "^0.27.0",
     "shortid": "^2.2.15",
     "shuffle-seed": "^1.1.6",
+    "streamifier": "^0.1.1",
     "uuid": "^8.3.2",
     "validator": "^11.1.0"
   },

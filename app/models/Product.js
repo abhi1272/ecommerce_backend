@@ -1,34 +1,30 @@
 const mongoose = require("mongoose");
-      Schema = mongoose.Schema;
+const { v4: uuidv4 } = require("uuid");
+Schema = mongoose.Schema;
 
 let productSchema = new Schema(
   {
-    name: {
+    uuid:{
+      type: String,
+      default:uuidv4(),
+      required:true
+    },
+    medicine_name: {
       type: String,
       require: true,
       trim: true,
     },
-    company: {
+    manufacturer: {
       type: String,
       require: true,
       trim: true,
     },
-    composition:[
-        {type:String}
-    ],
-    batchNo: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    mrp: {
+    composition: [{ type: String }],
+    MRP: {
       type: Number,
       require: true,
     },
-    discount: {
-      type: Number,
-    },
-    Rate: {
+    best_price: {
       type: Number,
     },
     image: {
@@ -36,19 +32,20 @@ let productSchema = new Schema(
     },
     description: {
       type: String,
+      trim:true
     },
-    category: [{
-      name: { type: String },
-      uuid: { type: String },
-    }],
-    addedBy: {
-      name: {
-        type: String,
-      },
-      uuid: {
-        type: String,
-      },
+    category: {
+      type: String
     },
+    benefits:{
+      type:String,
+      trim:true
+    },
+    pharmacist: [
+      {
+        type: Object,
+      },
+    ],
     similarProducts: [
       {
         name: { type: String },

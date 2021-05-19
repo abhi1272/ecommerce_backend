@@ -2,56 +2,23 @@ const ProductModel = require("../models/Product");
 const logger = require("../libs/loggerLib");
 const check = require("../libs/checkLib");
 const response = require("../libs/responseLib");
-const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const { v4: uuidv4 } = require('uuid');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    console.log(file);
-    cb(null, file.originalname);
-  },
+const { v4: uuidv4 } = require("uuid");
+const streamifier = require('streamifier')
+const MedicineModel = require('../models/Medicine')
+cloudinary.config({
+  cloud_name: process.env.cloudinary_cloud_name,
+  api_key: process.env.cloudinary_api_key,
+  api_secret: process.env.cloudinary_api_secret,
 });
 
-let addPrescription = (req, res) => {
-  const upload = multer({ storage }).single("prescription");
-  upload(req, res, function (err) {
-    if (err) {
-      return res.send(err);
-    }
-    console.log("file uploaded to server");
-    console.log(req.file);
-
-    // SEND FILE TO CLOUDINARY
-    cloudinary.config({
-      cloud_name: "dllk6zjx2",
-      api_key: "216168263948642",
-      api_secret: "hxEnPXH-O0goNtTTBbJLgVKW-jw",
-    });
-
-    const path = req.file.path;
-    const uniqueFilename = uuidv4();
-
-    cloudinary.uploader.upload(
-      path,
-      { public_id: `banner/${uniqueFilename}`, tags: `blog` }, // directory and tags are optional
-      function (err, image) {
-        if (err) return res.send(err);
-        console.log("file uploaded to Cloudinary");
-        // remove file from server
-        const fs = require("fs");
-        fs.unlinkSync(path);
-        // return image details
-        res.json(image);
-      }
-    );
-  });
+let addPrescription = async (req, res) => {
+  const result = await addImageToCloud(req,'prescription')
+  res.send(result)
 };
 
 let getSingleProduct = (req, res) => {
-  ProductModel.find({ _id: req.params.id }).exec((err, result) => {
+  ProductModel.find({ medicine_id: req.params.id }).exec((err, result) => {
     if (err) {
       logger.captureError(
         "some error occured",
@@ -71,7 +38,7 @@ let getSingleProduct = (req, res) => {
 };
 
 let getAllProduct = (req, res) => {
-  ProductModel.find({ company: { $in: ["Awzing", "Oracion"] } }).exec(
+  ProductModel.find({}).exec(
     (err, result) => {
       if (err) {
         logger.captureError(
@@ -107,13 +74,27 @@ let getAllProduct = (req, res) => {
   );
 };
 
-let addProduct = (req, res) => {
+let addProduct = async (req, res) => {
+  let imageUploadResponse;
+  if (req.file) {
+    imageUploadResponse = await addImageToCloud(req, 'Medicines');
+  }
+
   let Product = ProductModel({
     ...req.body,
+    uuid:uuidv4(),
+    image:imageUploadResponse ? imageUploadResponse.secure_url : ''
+  });
+
+  let Medicine = MedicineModel({
+    ...req.body,
+    uuid:uuidv4(),
+    image:imageUploadResponse ? imageUploadResponse.secure_url : ''
   });
 
   Product.save((err, result) => {
     if (err) {
+      console.log(err)
       logger.captureError(
         "some error occured",
         "productController : addProduct",
@@ -123,6 +104,7 @@ let addProduct = (req, res) => {
       res.send(apiResponse);
     } else {
       let apiResponse = response.generate(true, "product saved", 200, result);
+      Medicine.save()
       res.send(apiResponse);
       console.log(result);
     }
@@ -176,6 +158,24 @@ let deleteProduct = (req, res) => {
       );
       res.send(apiResponse);
     }
+  });
+};
+
+const addImageToCloud = async (req,folderName) => {
+  return new Promise((resolve, reject) => {
+    let cld_upload_stream = cloudinary.uploader.upload_stream(
+      {
+        folder: folderName,
+      },
+      (error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+    streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
   });
 };
 

@@ -6,7 +6,30 @@ const url = require('url');
 const appConfig = require('../../config/appConfig')
 
 
+
 let readModel = async (req, res) => {
+
+    console.log(req.params, appConfig.model)
+
+    Model[appConfig.model].find({uuid:req.params.id})
+        .exec((err, result) => {
+            if (err) {
+                console.log('error', err)
+                logger.captureError('some error occured', 'productController : getProduct', 10);
+                let apiResponse = response.generate(true, 'some error occured', 400, err);
+                res.send(apiResponse);
+            } else if (check.isEmpty(result)) {
+                let apiResponse = response.generate(true, `${appConfig.model} not found`, 500, null);
+                res.send(apiResponse);
+            } else {
+                let apiResponse = response.generate(false, `${appConfig.model} found`, 200, result[0]);
+                res.send(apiResponse);
+            }
+        }
+        );
+};
+
+let readModelByFilter = async (req, res) => {
 
     let page_size = 100
     let skip_records = 0
@@ -14,6 +37,7 @@ let readModel = async (req, res) => {
     let queryData = url.parse(req.url, true).query;
     if(queryData.paql){
         const fetchedQuery = JSON.parse(queryData.paql)
+        console.log(fetchedQuery)
         if(Object.keys(fetchedQuery.pagination).includes('page_size') && fetchedQuery.pagination.page_size){
             page_size = fetchedQuery.pagination.page_size
         }
@@ -78,9 +102,6 @@ let readModel = async (req, res) => {
 
 let createModel = (req, res) => {
 
-
-    console.log('ss',appConfig.model)
-
     let Product = Model[appConfig.model]({
         ...req.body
     });
@@ -141,6 +162,7 @@ let deleteModel = (req,res) =>{
 
 module.exports = {
     readModel,
+    readModelByFilter,
     createModel,
     updateModel,
     deleteModel

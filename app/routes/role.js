@@ -8,7 +8,7 @@ module.exports.setRouter = (app) => {
 
     app.post(`${baseUrl}/add`,common.createModel);
 
-    app.get(`${baseUrl}`,common.readModel);
+    app.get(`${baseUrl}`,common.readModelByFilter);
 
     app.patch(`${baseUrl}/:id`,common.updateModel);
 

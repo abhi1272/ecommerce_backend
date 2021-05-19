@@ -4,11 +4,9 @@ const appConfig = require("./../../config/appConfig");
 
 module.exports.setRouter = (app) => { 
 
-    let baseUrl = `${appConfig.apiVersion}/design`;
+    let baseUrl = `${appConfig.apiVersion}/category`;
 
     app.post(`${baseUrl}/add`,common.createModel);
-
-    // app.get(`${baseUrl}`,common.readAllModel);
 
     app.get(`${baseUrl}`,common.readModelByFilter);
 

@@ -1,5 +1,10 @@
 const common = require("./../../app/controllers/common");
 const appConfig = require("./../../config/appConfig");
+const multer = require('multer');
+const product = require("../controllers/product");
+const storage = multer.memoryStorage()
+const multerUploads = multer({ storage }).single('prescription');
+
 
 
 module.exports.setRouter = (app) => { 
@@ -8,9 +13,9 @@ module.exports.setRouter = (app) => {
 
     app.post(`${baseUrl}/add`,common.createModel);
 
-    // app.get(`${baseUrl}`,common.readAllModel);
+    app.post(baseUrl+'/prescription', multerUploads , product.addPrescription)
 
-    app.get(`${baseUrl}`,common.readModel);
+    app.get(`${baseUrl}`,common.readModelByFilter);
 
     app.patch(`${baseUrl}/:id`,common.updateModel);
 
