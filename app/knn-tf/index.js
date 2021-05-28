@@ -23,23 +23,28 @@ function knn(features, labels, predictPoint, k) {
 }
 
 let { features, labels, testFeatures, testLabels } = loadCSV(
-  "kc_house_data.csv",
+  "pune_places.csv",
   {
     shuffle: true,
-    splitTest: 10,
-    dataColumns: ["lat", "long","sqft_lot","sqft_living"],
-    labelColumns: ["price"],
+    splitTest: 500,
+    dataColumns: ["lat", "lon"],
+    labelColumns: ["duration"]
   }
 );
 
 features = tf.tensor(features)
 labels = tf.tensor(labels)
 
+// testFeatures.forEach((testPoint, i) => {
+//     const result = knn(features, labels, tf.tensor(testPoint), 10)
+//     const error = ((testLabels[i][0] - result) / testLabels[i][0])
+//     // console.log('Result', testPoint, result, testLabels[i][0])
+//     console.log('Error', error*100)
+// })
 
-testFeatures.forEach((testPoint, i) => {
-    const result = knn(features, labels, tf.tensor(testPoint), 10)
-    const error = ((testLabels[i][0] - result) / testLabels[i][0])
-    console.log('Error', error*100)
-})
+const result = knn(features, labels, tf.tensor([18.4355242,73.8929614]), 10)
+console.log(result)
 
-
+module.exports = {
+  knn
+}

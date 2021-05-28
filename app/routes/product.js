@@ -12,6 +12,8 @@ module.exports.setRouter = (app) => {
     
     app.post(baseUrl+'/add',multerUploads , product.addProduct);
 
+    app.get(baseUrl+'/invoice', product.createInvoice)
+
     app.get(baseUrl,product.getAllProduct);
 
     app.get(baseUrl+'/:id',common.readModel);

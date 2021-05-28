@@ -6,7 +6,8 @@ const logger = require('../libs/loggerLib');
 const validateInput = require('../libs/paramsValidationLib');
 const check = require('../libs/checkLib');
 const email = require('../email/mail');
-const redis = require('../../config/redis')
+const axios = require('axios')
+// const knn = require('../knn-tf/index')
 
 /* Models */
 const User = require('../models/User');
@@ -55,7 +56,7 @@ let loginFunction = async (req, res) => {
         res.send(apiResponse);
     }
     catch(e){
-        res.status('500').send(e);
+        res.status('500').send('User id or password is wrong');
         logger.error('Not able to login','userController:login',5)
         console.log(e)
     }
@@ -83,20 +84,41 @@ let logout = async (req, res) => {
 
 let getProfile = async (req,res) => {
 
-    res.status('200').send(req.loggedInUser);
+    let loggedInUser = req.body.loggedInUser;
+
+    try {
+        let result = await User.findOne({_id:loggedInUser._id});
+        res.send(result)
+    }catch(e){
+        console.log(e)
+    }
 };
 
 let updateProfile = async (req,res) => {
 
-    let loggedInUser = req.loggedInUser;
-
-    try {
-        let result = await User.findByIdAndUpdate(loggedInUser._id,req.body,{new:true});
+    let loggedInUser = req.body.loggedInUser;
+    const lastAddress = loggedInUser.address[0]
+    
+      try {
+        let user = await User.findOne({_id: loggedInUser._id});
+        if(loggedInUser.orders > user.orders ){
+            console.log('more orders', loggedInUser.orders[loggedInUser.orders.length -1])
+        }else if(loggedInUser.orders === 1){
+            // const result = knn(features, labels, tf.tensor([lastAddress.location.lat,astAddress.location.lng]), 10)
+            // console.log('result', result)
+        }
+        if(loggedInUser.address && loggedInUser.address.length === 1){
+            console.log('splittedAddress', loggedInUser.address)
+            const splittedAddress = lastAddress.address.split(' ').join('+')
+            const loc = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${splittedAddress}+${lastAddress.city}+${lastAddress.state}&key=AIzaSyADPRYiIo9c6t4R9aoyo4INvh_3H8taDhI`);
+            loggedInUser.address[0].location =  loc.data ? loc.data.results[0].geometry.location : ''
+        }
+        let result = await User.findByIdAndUpdate(loggedInUser._id,loggedInUser);
         res.send(result);
-
     }catch(e){
-        res.status('500').send(e);
+        console.log(e)
     }
+
 };
 
 let setToken = (res, user, token) => {
@@ -113,12 +135,23 @@ let setToken = (res, user, token) => {
 //   );
 };
 
+let addAddress = async(req,res) => {
+    console.log(req.body)
+    try {
+      const result = await User.update({ email: req.body.email }, { $push: { address:req.body.address } });
+      res.send(result)
+    } catch (e) {
+      res.status("500").send(e);
+    }
+   
+}
+
 module.exports = {
 
     signUpFunction: signUpFunction,
     loginFunction: loginFunction,
     logout: logout,
     getProfile:getProfile,
-    updateProfile:updateProfile
-
+    updateProfile:updateProfile,
+    addAddress
 };// end exports

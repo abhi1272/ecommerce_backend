@@ -54,7 +54,6 @@ let readModelByFilter = async (req, res) => {
     }else{
         query = queryData
     }
-    console.log(query, appConfig.model)
 
     const count = await Model[appConfig.model].countDocuments()
 

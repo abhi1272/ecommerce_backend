@@ -51,6 +51,12 @@ let userSchema = new Schema({
   mobileNumber:{
     type:Number
   },
+  address:[{
+    type:Object
+  }],
+  orders:[{
+    type:Object
+  }],
   tokens:[{
     token:{
       type:String,
@@ -102,14 +108,15 @@ userSchema.statics.findByCredentials = async (email,password) => {
 
   let foundUSer = await User.findOne({email});
   if(!foundUSer){
-    throw new Error('Unable to login');
+    return 'No User Found'
   }
   let isMatch = await bcrypt.compare(password,foundUSer.password);
   if(!isMatch){
-    throw new Error('Unable to login');
+    return 'Password and Email not matched'
+  }else{
+    return foundUSer;
   }
 
-  return foundUSer;
 
 };
 

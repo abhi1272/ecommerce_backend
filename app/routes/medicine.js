@@ -11,7 +11,10 @@ module.exports.setRouter = (app) => {
 
     let baseUrl = `${appConfig.apiVersion}/medicine`;
 
+
     app.post(`${baseUrl}/add`,common.createModel);
+
+    app.get(baseUrl+'/:id',common.readModel);
 
     app.post(baseUrl+'/prescription', multerUploads , product.addPrescription)
 

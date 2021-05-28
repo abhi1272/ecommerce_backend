@@ -16,6 +16,9 @@ module.exports.setRouter = (app) => {
     // params: firstName, lastName, email, mobileNumber, password
     app.post(`${baseUrl}/signup`, userController.signUpFunction);
 
+    // add address
+    app.post(`${baseUrl}/address`, userController.addAddress);
+
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
@@ -69,8 +72,8 @@ module.exports.setRouter = (app) => {
     // auth token params: userId.
     app.post(`${baseUrl}/logout`, auth, userController.logout);
 
-    app.get(`${baseUrl}/profile`, auth, userController.getProfile);
+    app.get(`${baseUrl}/profile`, userController.getProfile);
 
-    app.patch(`${baseUrl}/profile`, auth, userController.updateProfile);
+    app.patch(`${baseUrl}/profile`, userController.updateProfile);
 
 };
