@@ -6,13 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon index.js",
-    "seed_user": "env-cmd -f ./config/dev.env node config/seed.js User",
-    "seed_customer": "env-cmd -f ./config/dev.env nodemon config/seed.js Customer",
-    "seed_product": "env-cmd -f ./config/dev.env nodemon config/seed.js Product",
-    "save_user": "env-cmd -f ./config/dev.env node config/saveData.js User",
-    "save_customer": "env-cmd -f ./config/dev.env node config/saveData.js Customer",
-    "save_product": "env-cmd -f ./config/dev.env node config/saveData.js Product"
+    "dev": "env-cmd -f ./config/dev.env nodemon index.js"
   },
   "author": "Vaishnavi Anand",
   "license": "MIT",

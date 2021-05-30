@@ -7,7 +7,7 @@ const auth = require("../middlewares/auth");
 
 module.exports.setRouter = (app) => {
 
-    let baseUrl = `${appConfig.apiVersion}/users`;
+    let baseUrl = `${appConfig.apiVersion}/user`;
 
     // defining routes.
     app.get(`${baseUrl}`, common.readModelByFilter);
@@ -75,5 +75,10 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/profile`, userController.getProfile);
 
     app.patch(`${baseUrl}/profile`, userController.updateProfile);
+
+    app.put(`${baseUrl}/:id`, common.updateModel);
+
+    app.delete(`${baseUrl}/:id`, common.deleteModel);
+
 
 };

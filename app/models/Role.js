@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 let roleSchema = new Schema({
-  roleId: {
+  uuid: {
     type: String,
     default: uuidv4(),
     index: true,

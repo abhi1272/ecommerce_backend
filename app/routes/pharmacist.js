@@ -10,7 +10,7 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}`,common.readModelByFilter);
 
-    app.patch(`${baseUrl}/:id`,common.updateModel);
+    app.put(`${baseUrl}/:id`,common.updateModel);
 
     app.delete(`${baseUrl}/:id`,common.deleteModel);
     

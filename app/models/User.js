@@ -8,7 +8,7 @@ const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-  userId: {
+  uuid: {
     type: String,
     default: uuidv4(),
     index: true,
@@ -63,9 +63,13 @@ let userSchema = new Schema({
       required:true
     }
   }],
-  role:{
-    roleId:{type:String},
-    name:{type:String}
+  roleId:{
+    type:String,
+    default:'16babe64-c962-406f-9f3e-191180e6e206'
+  },
+  roleName:{
+    type:String,
+    default:'User'
   },
   avatar:{
     type:Buffer

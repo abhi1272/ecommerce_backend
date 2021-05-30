@@ -4,6 +4,8 @@ const response = require('../libs/responseLib');
 const Model = require('../../config/models')
 const url = require('url');
 const appConfig = require('../../config/appConfig')
+const { v4: uuidv4 } = require("uuid");
+
 
 
 
@@ -102,9 +104,18 @@ let readModelByFilter = async (req, res) => {
 let createModel = (req, res) => {
 
     let Product = Model[appConfig.model]({
-        ...req.body
+        ...req.body,
+        uuid:uuidv4()
     });
 
+
+    // if(appConfig.model === 'pharmacist'){
+    //     const splittedAddress = lastAddress.address.split(' ').join('+')
+    //     const loc = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${splittedAddress}+${lastAddress.city}+${lastAddress.state}&key=AIzaSyADPRYiIo9c6t4R9aoyo4INvh_3H8taDhI`);
+    //     console.log('loc')
+    //     loggedInUser.address[0].location =  loc.data ? loc.data.results[0].geometry.location : ''    
+    // }
+  
     Product.save((err, result) => {
         if (err) {
             console.log('err', err)
@@ -124,7 +135,7 @@ let createModel = (req, res) => {
 let updateModel = (req, res) => {
 
     let options = req.body;
-    Model[appConfig.model].updateOne({ _id: req.params.id},options,(err, result) => {
+    Model[appConfig.model].updateOne({ uuid: req.params.id},options,(err, result) => {
         if (err) {
             logger.captureError('some error occured', 'productController: editProduct');
             let apiResponse = response.generate(true, 'some error occured', 400, err);
@@ -143,7 +154,7 @@ let updateModel = (req, res) => {
 
 let deleteModel = (req,res) =>{
 
-    Model[appConfig.model].deleteMany({Batch:req.params.Batch},(err,result)=>{
+    Model[appConfig.model].deleteMany({uuid:req.params.id},(err,result)=>{
         if(err){
             logger.captureError('error occured','productController : deleteProduct',10);
             res.send(err);

@@ -60,8 +60,6 @@ app.all('*', function(req, res, next) {
 //   console.log("-- Client Health --",err,resp,status);
 // });
 
-const modelCreation =  require('./config/modelCreation');
-modelCreation.setRouter(app);
 
 //Bootstrap models
 fs.readdirSync(modelsPath).forEach(function (file) {

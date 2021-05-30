@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const categorySchema = new mongoose.Schema({
 
-    categoryId:{
+    uuid:{
         type:String,
         default:uuidv4()
     },

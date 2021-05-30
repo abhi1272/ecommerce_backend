@@ -18,7 +18,7 @@ module.exports.setRouter = (app) => {
 
     app.get(baseUrl+'/:id',common.readModel);
 
-    app.patch(baseUrl+'/:id',common.updateModel);
+    app.put(baseUrl+'/:id',multerUploads, product.editProduct);
 
     app.delete(baseUrl+'/:id',common.deleteModel);
     

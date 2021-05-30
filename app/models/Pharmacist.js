@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 
 let pharmacistSchema = new Schema(
   {
+    uuid:{
+      type: String,
+      require: true,
+    },
     name: {
       type: String,
       require: true,
@@ -18,7 +22,6 @@ let pharmacistSchema = new Schema(
     ],
     longitude: {
       type: Number,
-      require: true,
     },
     latitude: {
       type: Number,
