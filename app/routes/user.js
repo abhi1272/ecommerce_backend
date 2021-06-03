@@ -72,7 +72,7 @@ module.exports.setRouter = (app) => {
     // auth token params: userId.
     app.post(`${baseUrl}/logout`, auth, userController.logout);
 
-    app.get(`${baseUrl}/profile`, userController.getProfile);
+    app.get(`${baseUrl}/profile/:id`, userController.getProfile);
 
     app.patch(`${baseUrl}/profile`, userController.updateProfile);
 

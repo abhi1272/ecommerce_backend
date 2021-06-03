@@ -7,7 +7,10 @@ const validateInput = require('../libs/paramsValidationLib');
 const check = require('../libs/checkLib');
 const email = require('../email/mail');
 const axios = require('axios')
-// const knn = require('../knn-tf/index')
+const tf = require("@tensorflow/tfjs");
+const callKnn = require('../knn-tf/knn_ml').callKnn
+const moment = require('moment')
+
 
 /* Models */
 const User = require('../models/User');
@@ -84,10 +87,10 @@ let logout = async (req, res) => {
 
 let getProfile = async (req,res) => {
 
-    let loggedInUser = req.body.loggedInUser;
+    let uuid = req.params.id;
 
     try {
-        let result = await User.findOne({_id:loggedInUser._id});
+        let result = await User.findOne({uuid});
         res.send(result)
     }catch(e){
         console.log(e)
@@ -95,23 +98,35 @@ let getProfile = async (req,res) => {
 };
 
 let updateProfile = async (req,res) => {
-
+    console.log('update profile')
     let loggedInUser = req.body.loggedInUser;
     const lastAddress = loggedInUser.address[0]
-    
       try {
         let user = await User.findOne({_id: loggedInUser._id});
-        if(loggedInUser.orders > user.orders ){
-            console.log('more orders', loggedInUser.orders[loggedInUser.orders.length -1])
-        }else if(loggedInUser.orders === 1){
-            // const result = knn(features, labels, tf.tensor([lastAddress.location.lat,astAddress.location.lng]), 10)
-            // console.log('result', result)
-        }
         if(loggedInUser.address && loggedInUser.address.length === 1){
-            console.log('splittedAddress', loggedInUser.address)
             const splittedAddress = lastAddress.address.split(' ').join('+')
             const loc = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${splittedAddress}+${lastAddress.city}+${lastAddress.state}&key=AIzaSyADPRYiIo9c6t4R9aoyo4INvh_3H8taDhI`);
             loggedInUser.address[0].location =  loc.data ? loc.data.results[0].geometry.location : ''
+        }
+        if(loggedInUser.orders > user.orders ){
+            console.log('if order added')
+            let timeDurationToReachOrder
+            const result = await callKnn(tf.tensor([lastAddress.location.lat,lastAddress.location.lng])) 
+            const lastOrderTime = new Date(loggedInUser.orders[loggedInUser.orders.length -1].time*1000).getHours() 
+            if(lastOrderTime >= 20 && lastOrderTime < 23){
+                timeDurationToReachOrder = 10*60*60 + result    
+            }   
+            if(lastOrderTime >= 00 && lastOrderTime <= 4){
+                timeDurationToReachOrder = 10*60*60 + result    
+            }
+            if(lastOrderTime > 4 && lastOrderTime <= 16){
+                timeDurationToReachOrder = 4*60*60 + result    
+            }
+            if(lastOrderTime > 16 && lastOrderTime < 20){
+                timeDurationToReachOrder = 2*60*60 + result    
+            }
+            const time = moment().add(+timeDurationToReachOrder, 'seconds').calendar()
+            loggedInUser.orders[loggedInUser.orders.length -1]['orderDeliveryTime'] = time            
         }
         let result = await User.findByIdAndUpdate(loggedInUser._id,loggedInUser);
         res.send(result);

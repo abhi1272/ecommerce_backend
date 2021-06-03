@@ -40,10 +40,10 @@ let readModelByFilter = async (req, res) => {
     if(queryData.paql){
         const fetchedQuery = JSON.parse(queryData.paql)
         console.log(fetchedQuery)
-        if(Object.keys(fetchedQuery.pagination).includes('page_size') && fetchedQuery.pagination.page_size){
+        if(fetchedQuery.pagination && Object.keys(fetchedQuery.pagination).includes('page_size') && fetchedQuery.pagination.page_size){
             page_size = fetchedQuery.pagination.page_size
         }
-        if(Object.keys(fetchedQuery.pagination).includes('page_num') && fetchedQuery.pagination.page_num > 1){
+        if(fetchedQuery.pagination && Object.keys(fetchedQuery.pagination).includes('page_num') && fetchedQuery.pagination.page_num > 1){
             console.log(fetchedQuery.pagination.page_num)
             skip_records =  (page_size - skip_records) * (+fetchedQuery.pagination.page_num - 1)
         }
