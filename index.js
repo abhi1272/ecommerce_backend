@@ -41,27 +41,6 @@ app.all('*', function(req, res, next) {
     next();
 });
 
-// redis connection 
-// const redis = require('redis')
-
-// const client = redis.createClient()
-
-// client.on('connect',(err) => {
-//   if(err){
-//     console.log(err)
-//   }else{
-//     console.log('redis connected')
-//   }
-// })
-
-// elastic search connection  
-
-// const client = require('./config/elastic');
-
-// client.cluster.health({},function(err,resp,status) {  
-//   console.log("-- Client Health --",err,resp,status);
-// });
-
 
 //Bootstrap models
 fs.readdirSync(modelsPath).forEach(function (file) {

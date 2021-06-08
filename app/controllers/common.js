@@ -58,7 +58,7 @@ let readModelByFilter = async (req, res) => {
     }
 
     const count = await Model[appConfig.model].countDocuments()
-
+    console.log('model', appConfig.model)
     Model[appConfig.model].find(query).limit(+page_size).skip(skip_records)
         .exec((err, result) => {
             if (err) {

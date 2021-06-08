@@ -1,5 +1,4 @@
 const model = {
-    Customer: require('../app/models/Customer'),
     Product: require('../app/models/Product'),
     Design: require('../app/models/Design.js'),
     Medicine: require('../app/models/Medicine'),

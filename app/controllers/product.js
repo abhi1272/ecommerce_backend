@@ -109,6 +109,7 @@ let editProduct = async(req, res) => {
     };
     MedicineModel.update({ uuid: req.params.id }, options, (err, result) => {
         if (err) {
+            console.log('error', err)
             logger.captureError(
                 "some error occured",
                 "productController: editProduct"
@@ -171,22 +172,6 @@ const addImageToCloud = async(req, folderName) => {
         streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
     });
 };
-
-// const createInvoice = async (req, res) => {
-
-//   const invoice = JSON.parse(req.query.data)
-
-//   let doc = new PDFDocument({ margin: 50 });
-
-//   generateHeader(doc, invoice);
-//   generateCustomerInformation(doc, invoice);
-//   generateInvoiceTable(doc, invoice);
-//   generateFooter(doc);
-
-//   doc.end();
-//   doc.pipe(res);
-//   // cloudinary.uploader.upload(doc.pipe(),{folder:'report'},function(res,err){console.log(res,err)});
-// }
 
 const createInvoice = async(req, res) => {
     let doc = new PDFDocument({ size: "A4", margin: 50 });

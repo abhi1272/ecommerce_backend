@@ -5,7 +5,6 @@ const response = require('../libs/responseLib');
 const logger = require('../libs/loggerLib');
 const validateInput = require('../libs/paramsValidationLib');
 const check = require('../libs/checkLib');
-const email = require('../email/mail');
 const axios = require('axios')
 const tf = require("@tensorflow/tfjs");
 const callKnn = require('../knn-tf/knn_ml').callKnn
@@ -24,7 +23,6 @@ let signUpFunction = async (req, res) => {
     try{
         let token = await newUser.generateAuthToken();
         await newUser.save();
-        await email.sendMail(newUser.email,newUser.firstName);
         logger.info('You are successfully registered','userController: signup',1);
         let apiResponse = response.generate(false,'You are successfully registered',200,{newUser,token});
         res.send(apiResponse);
