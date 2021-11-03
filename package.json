@@ -57,7 +57,7 @@
     "shuffle-seed": "^1.1.6",
     "streamifier": "^0.1.1",
     "uuid": "^8.3.2",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.3.0",
